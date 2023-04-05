@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace LinqInternals.Demo.Models
 {
-    public class Customer
+    public class Address
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public Phone[] Phones { get; set; } = null!;
+        public int CustomerId { get; set; }
+        public string? Street { get; set; }
+        public string? City { get; set; }
     }
 }
