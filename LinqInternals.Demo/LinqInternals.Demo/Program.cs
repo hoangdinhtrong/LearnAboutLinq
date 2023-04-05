@@ -1,5 +1,6 @@
 ﻿using LinqInternals.Demo.Extensions;
 using LinqInternals.Demo.Models;
+using LinqInternals.Demo.Services;
 
 namespace LinqInternals.Demo
 {
@@ -30,7 +31,17 @@ namespace LinqInternals.Demo
                     }
                 }
             };
-            ExampleJoinLinq(customers);
+
+            // Dispose
+
+            using (ServiceProxy serviceProxy = new ServiceProxy(null!))
+            {
+                serviceProxy.Get();
+
+                serviceProxy.Post("");
+            };
+            // End Dispose
+
         }
 
         /// <summary>
