@@ -74,9 +74,13 @@ namespace LinqInternals.Demo.Extensions
         {
             foreach(var item in items)
             {
-                foreach(var innerItem in innerItems)
+                if (item == null) continue;
+                foreach (var innerItem in innerItems)
                 {
-                    if (item != null && outerKeySelector(item)!.Equals(innerKeySelector(innerItem))){
+                    TKey? outerKey = outerKeySelector(item);
+                    if (outerKey == null) continue;
+
+                    if (outerKey.Equals(innerKeySelector(innerItem))){
                         yield return resultSelector(item, innerItem);
                     }
                 }
