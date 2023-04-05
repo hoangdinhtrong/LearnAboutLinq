@@ -11,6 +11,7 @@ namespace LinqInternals.Demo
             {
                 new Customer()
                 {
+                    Id = 1,
                     Name = "Foo",
                     Phones = new[]
                     {
@@ -20,6 +21,7 @@ namespace LinqInternals.Demo
                 },
                 new Customer()
                 {
+                    Id = 2,
                     Name = "Foo 2",
                     Phones = new[]
                     {
@@ -28,9 +30,39 @@ namespace LinqInternals.Demo
                     }
                 }
             };
-            ExampleSelectManyLinq(customers);
+            ExampleJoinLinq(customers);
         }
 
+        /// <summary>
+        /// EXAMPLE ABOUT JOIN IN LINQ
+        /// </summary>
+        /// <param name="customers"></param>
+        private static void ExampleJoinLinq(IEnumerable<Customer> customers)
+        {
+            if (customers != null && customers.Count() > 0)
+            {
+                var addresses = new[]
+                {
+                    new Address(){Id = 1, CustomerId = 2, Street="123 Street", City="City 1"},
+                    new Address(){Id = 2, CustomerId = 2, Street="456 Street", City="City 2"},
+                };
+
+
+                var customerInfos = customers.Join(addresses, c => c.Id, a => a.CustomerId, (c,a) => new
+                {
+                    c.Name, a.Street, a.City
+                });
+                foreach (var item in customerInfos)
+                {
+                    Console.WriteLine($"{item.Name} - {item.Street} - {item.City}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// EXAMPLE ABOUT SELECT IN LINQ
+        /// </summary>
+        /// <param name="customers"></param>
         private static void ExampleSelectLinq(IEnumerable<Customer> customers)
         {
 
@@ -44,6 +76,10 @@ namespace LinqInternals.Demo
             }
         }
 
+        /// <summary>
+        /// EXAMPLE ABOUT SELECT MANY IN LINQ
+        /// </summary>
+        /// <param name="customers"></param>
         private static void ExampleSelectManyLinq(IEnumerable<Customer> customers)
         {
 
@@ -57,6 +93,9 @@ namespace LinqInternals.Demo
             }
         }
 
+        /// <summary>
+        /// EXAMPLE ABOUT WHERE IN LINQ
+        /// </summary>
         private static void ExampleWhereLinq()
         {
             var items = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
