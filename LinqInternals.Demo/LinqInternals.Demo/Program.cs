@@ -1,6 +1,7 @@
 ﻿using LinqInternals.Demo.Extensions;
 using LinqInternals.Demo.Models;
 using LinqInternals.Demo.Services;
+using System.Reflection;
 
 namespace LinqInternals.Demo
 {
@@ -32,16 +33,64 @@ namespace LinqInternals.Demo
                 }
             };
 
-            // Dispose
+            //// Dispose
+            //using (ServiceProxy serviceProxy = new ServiceProxy(null!))
+            //{
+            //    serviceProxy.Get();
 
-            using (ServiceProxy serviceProxy = new ServiceProxy(null!))
+            //    serviceProxy.Post("");
+            //};
+            //// End Dispose
+
+
+            //// Reflection
+            var assembly = Assembly.LoadFrom(@"../../../../../../LearnAboutLinq/LinqInternals.Demo/PrintAll/bin/Debug/net6.0/PrintAll.dll");
+
+            foreach (var type in assembly.GetTypes())
             {
-                serviceProxy.Get();
+                Console.WriteLine($"Type: {type.Name}");
+                var instance = Activator.CreateInstance(type);
 
-                serviceProxy.Post("");
-            };
-            // End Dispose
+                Console.WriteLine("=============================================================================");
+                foreach (var field in type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                {
+                    Console.WriteLine($"Field: {field.Name}");
+                    field.SetValue(instance, "Foo");
+                }
 
+                Console.WriteLine("=============================================================================");
+                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(x => !x.IsSpecialName))
+                {
+                    Console.WriteLine($"Method: {method.Name}");
+                    if (method.GetParameters().Length > 0)
+                    {
+                        method.Invoke(instance, new object[] { "Test Name" });
+                    }
+                    else if (method.ReturnType.Name != "Void")
+                    {
+                        var returnedValue = method.Invoke(instance, null);
+                        Console.WriteLine($"Returned value from method: {returnedValue}");
+                    }
+                    else
+                    {
+                        method.Invoke(instance, null);
+                    }
+                }
+
+
+                Console.WriteLine("=============================================================================");
+                foreach (var property in type.GetProperties())
+                {
+                    Console.WriteLine($"Property: {property.Name}");
+                    var propertyValue = property.GetValue(instance);
+
+                    Console.WriteLine($"Property value: {propertyValue}");
+                }
+
+
+                Console.WriteLine("******************************************************************************");
+            }
+            //// End Reflection
         }
 
         /// <summary>
